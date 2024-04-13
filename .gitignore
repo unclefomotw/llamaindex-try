@@ -131,6 +131,7 @@ env.secret
 
 # llamaindex storage
 storage/
+qdrant_storage/
 
 # Spyder project settings
 .spyderproject
