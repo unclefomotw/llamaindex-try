@@ -2,6 +2,7 @@
 
 # Create the query engine in a slightly lower level way,
 # including setting retriever, node post processors, and synthesis
+# Also, customize the embedding model here
 
 import logging
 import os
@@ -14,13 +15,24 @@ from llama_index.core import (
     get_response_synthesizer,
     load_index_from_storage
 )
+# from llama_index.core import Settings
 from llama_index.core.indices.vector_store import VectorIndexRetriever
 from llama_index.core.postprocessor import SimilarityPostprocessor
 from llama_index.core.query_engine.retriever_query_engine import RetrieverQueryEngine
+from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
 
 RAG_DATA_DIR = os.environ["RAG_DATA_DIR"]
-PERSIST_DIR = "./storage"
+PERSIST_DIR = "./storage/rag_4"
+
+# The same embedding model is required in both creation and load
+# ("How" data is embedded is not serialized)
+EMBEDDING_MODEL = OpenAIEmbedding(model="text-embedding-3-small")
+
+# To avoid excessive arg passing (see `build_index()` + `load_index()`)
+# Another way is just to specify in global setting level
+# so that you don't need to specify when loading the index
+# Settings.embed_model = EMBEDDING_MODEL
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
@@ -35,8 +47,12 @@ def build_index():
         required_exts=[".md"]
     ).load_data()
 
-    # make the index in the memory
-    index = VectorStoreIndex.from_documents(documents)
+    # Specify embedding model when creating index
+    # (Or maybe use ServiceContext ??)
+    index = VectorStoreIndex.from_documents(
+        documents,
+        embed_model=EMBEDDING_MODEL
+    )
 
     # store it for later
     index.storage_context.persist(persist_dir=PERSIST_DIR)
@@ -46,7 +62,11 @@ def build_index():
 
 def load_index():
     storage_context = StorageContext.from_defaults(persist_dir=PERSIST_DIR)
-    index = load_index_from_storage(storage_context)
+    # When loading, need to specify the embedding model information again
+    index = load_index_from_storage(
+        storage_context,
+        embed_model=EMBEDDING_MODEL
+    )
 
     return index
 
@@ -64,7 +84,7 @@ def main():
     )
 
     node_postprocessors = [
-        SimilarityPostprocessor(similarity_cutoff=0.85)
+        SimilarityPostprocessor(similarity_cutoff=0.55)
     ]
 
     # LLM is with synthesizer, so are prompt templates and response mode
@@ -80,6 +100,9 @@ def main():
     )
 
     response = query_engine.query("CFOP 要怎麼學？有建議的順序嗎？")
+    print(response)
+
+    response = query_engine.query("學魔術方塊有哪些網站或影片可以看？")
     print(response)
 
 
