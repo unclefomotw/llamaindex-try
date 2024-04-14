@@ -6,3 +6,4 @@ random attempts in learning llamaindex
 * rag_2.py - Customize LLM and prompts
 * rag_3.py - Use a vector database (Qdrant) + Data ingestion
 * rag_4.py - Create the query engine in a slightly lower level way
+* rag_5.py - Instrumentation and customized event handler

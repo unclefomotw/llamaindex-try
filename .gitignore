@@ -133,6 +133,9 @@ env.secret
 storage/
 qdrant_storage/
 
+# my log / output
+log.txt
+
 # Spyder project settings
 .spyderproject
 .spyproject
