@@ -8,3 +8,4 @@ random attempts in learning llamaindex
 * rag_4.py - Create the query engine in a slightly lower level way
 * rag_5.py - Instrumentation and customized event handler
 * rag_6.py - Use an embedding model on HuggingFace
+* rag_7.py - Use different chunking/indexing strategies
