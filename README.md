@@ -9,3 +9,4 @@ random attempts in learning llamaindex
 * rag_5.py - Instrumentation and customized event handler
 * rag_6.py - Use an embedding model on HuggingFace
 * rag_7.py - Use different chunking/indexing strategies
+* rag_8.py - Use IngestionPipeline to parse doc and feed nodes into vector db
