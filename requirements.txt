@@ -1,0 +1,5 @@
+llama-index==0.10.28
+llama-index-vector-stores-qdrant
+treelib
+llama-index-embeddings-huggingface
+streamlit==1.33.0
